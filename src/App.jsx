@@ -6,7 +6,7 @@ function App() {
   
 
   return (
-    <div className='bg-slate-900 h-[1000px]'>
+    <div className='bg-slate-900 min-h-[1000px]'>
       <Animation1 />
     </div>
   )

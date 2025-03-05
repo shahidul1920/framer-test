@@ -1,5 +1,5 @@
-import React from "react";
-import { motion, useScroll } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import { delay, easeIn, motion, useAnimation, useInView, useScroll, useTransform } from "framer-motion";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -15,6 +15,36 @@ const pathVariants = {
 
 export default function Animation1() {
     const {scrollYProgress: completionProgress} = useScroll()
+
+    const containerRef =  useRef(null)
+    const isInView = useInView(containerRef, {once:true})
+    const mainControls = useAnimation()
+    
+    const {scrollYProgress} = useScroll({
+        target: containerRef,
+        offset: ["start end", "end end"],
+    })
+    const pOne = useTransform(
+        scrollYProgress,
+        [0, 1],
+        ['-100%', '0%'],
+    )
+    const pTwo = useTransform(
+        scrollYProgress,
+        [0, 1],
+        ['100%', '0%'],
+    )
+
+    useEffect(()=>{
+        if(isInView){
+            mainControls.start('visible')
+        }
+    },[isInView])
+
+
+
+
+
   return (
     <div className="animation1 flex flex-col gap-10 overflow-x-hidden">
       <motion.section
@@ -62,11 +92,33 @@ export default function Animation1() {
           className="rounded-lg bg-slate-800 aspect-square justify-center flex items-center gap-10"
         >
             <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-1/2 stroke-amber-500 stroke-[0.5]">
-                <motion.path d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" variants={pathVariants} initial='hidden' animate='visible' transition={{fill:{duration:2, ease: 'easeIn', repeat: Infinity, repeatType: "reverse"}}} />
+                <motion.path d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" variants={pathVariants} initial='hidden' animate='visible' transition={{ default:{duration:2, ease: 'easeInOut', delay:1, repeat: Infinity, repeatType: 'reverse', repeatDelay:1},fill:{duration:2, ease: 'easeIn', repeat: Infinity, repeatType: "reverse"}}} />
             </motion.svg>
         </motion.div>
         
       </motion.section>
+
+
+
+
+    <section className="flex flex-col gap-10 p-10" ref={containerRef}>
+        <motion.h1 className="text-5xl my-10 tracking-wide text-slate-100 text-center" animate={mainControls} initial='hidden' variants={{hidden:{opacity: 0, y:75}, visible:{opacity:1, y:0}}}transition={{delay:.3}}>Just keep scrolling</motion.h1>
+
+        <motion.p style={{translate: pOne}} className="font-thin text-2xl text-slate-100 mx-auto mt-8">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis amet molestiae illo repellendus maiores ex, neque tempora quo quod delectus qui minus impedit aliquid fuga provident magnam eveniet dolorem sunt commodi cum aliquam vel. Saepe reprehenderit sint minus amet? Esse, alias sapiente. Sapiente placeat ad, provident maxime expedita laborum nulla asperiores eaque fuga officia qui quas quod cum omnis mollitia iusto sed consectetur harum assumenda, possimus deserunt autem fugit illo fugiat. Placeat corrupti rerum, modi maiores ut dolorem quibusdam quaerat molestias beatae quam deleniti a, nostrum numquam praesentium labore veniam?
+        </motion.p>
+        <motion.p style={{translate: pTwo}} className="font-thin text-2xl text-slate-100 mx-auto mb-8">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae minima aut aliquid enim! Numquam veritatis consequuntur ipsam ullam ipsa. Dolore, non? Ipsam eos earum at nobis recusandae quasi pariatur. Officiis consequatur possimus ab quae repellat accusamus at facilis. Quibusdam ut cum distinctio, modi at delectus nam alias eum, culpa molestias cupiditate inventore vitae explicabo pariatur! Incidunt distinctio eos quisquam consequuntur odio, consectetur magni a. Vero quam minus dicta pariatur nisi, cum nobis molestias voluptatum id esse dolorum magnam. Vel earum provident autem voluptatem sequi suscipit quas nobis voluptate! Sapiente, ullam. Quisquam, quos. Quisquam, quos.
+        </motion.p>
+
+    </section>
+
+
+
+
+
+
+
     </div>
   );
 }
